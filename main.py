@@ -2,13 +2,17 @@
 # Concepts used: variables & types (13.3), decisions (13.4),
 # and/or & while (13.5), functions (13.6), lists & dicts (13.7)
 
+# A type alias — gives a short name to a long type.
+# MailItem is a dict where keys are str, values are str or int or bool.
+type MailItem = dict[str, str | int | bool]
+
 
 # ── Core functions ──────────────────────────────────────────
 
 
-def make_item(item_id: int, recipient: str, item_type: str, description: str) -> dict:
+def make_item(item_id: int, recipient: str, item_type: str, description: str) -> MailItem:
     """Create a mail item dictionary."""
-    item: dict = {
+    item: MailItem = {
         "id": item_id,
         "recipient": recipient,
         "item_type": item_type,
@@ -18,20 +22,20 @@ def make_item(item_id: int, recipient: str, item_type: str, description: str) ->
     return item
 
 
-def next_id(mailbox: list) -> int:
+def next_id(mailbox: list[MailItem]) -> int:
     """Return the next available ID (one more than the current count)."""
     return len(mailbox) + 1
 
 
-def add_item(mailbox: list, recipient: str, item_type: str, description: str) -> dict:
+def add_item(mailbox: list[MailItem], recipient: str, item_type: str, description: str) -> MailItem:
     """Create a new mail item and append it to the mailbox. Returns the item."""
     item_id: int = next_id(mailbox)
-    item: dict = make_item(item_id, recipient, item_type, description)
+    item: MailItem = make_item(item_id, recipient, item_type, description)
     mailbox.append(item)
     return item
 
 
-def find_item(mailbox: list, item_id: int) -> dict | None:
+def find_item(mailbox: list[MailItem], item_id: int) -> MailItem | None:
     """Find an item by its ID. Returns the item dict, or None if not found."""
     for item in mailbox:
         if item["id"] == item_id:
@@ -39,9 +43,9 @@ def find_item(mailbox: list, item_id: int) -> dict | None:
     return None
 
 
-def pick_up(mailbox: list, item_id: int) -> bool:
+def pick_up(mailbox: list[MailItem], item_id: int) -> bool:
     """Mark an item as picked up. Returns True if successful, False otherwise."""
-    item: dict | None = find_item(mailbox, item_id)
+    item: MailItem | None = find_item(mailbox, item_id)
     if item is None:
         return False
     if item["picked_up"]:
@@ -50,20 +54,20 @@ def pick_up(mailbox: list, item_id: int) -> bool:
     return True
 
 
-def pending_items(mailbox: list) -> list:
+def pending_items(mailbox: list[MailItem]) -> list[MailItem]:
     """Return a list of items that have NOT been picked up yet."""
-    result: list = []
+    result: list[MailItem] = []
     for item in mailbox:
         if not item["picked_up"]:
             result.append(item)
     return result
 
 
-def count_by_type(mailbox: list) -> dict:
+def count_by_type(mailbox: list[MailItem]) -> dict[str, int]:
     """Count how many items of each type are in the mailbox."""
-    counts: dict = {}
+    counts: dict[str, int] = {}
     for item in mailbox:
-        item_type: str = item["item_type"]
+        item_type = str(item["item_type"])
         if item_type in counts:
             counts[item_type] = counts[item_type] + 1
         else:
@@ -74,15 +78,15 @@ def count_by_type(mailbox: list) -> dict:
 # ── Display helpers ─────────────────────────────────────────
 
 
-def format_item(item: dict) -> str:
+def format_item(item: MailItem) -> str:
     """Format one mail item as a readable line."""
     status: str = "PICKED UP" if item["picked_up"] else "WAITING"
     return f"  [{item['id']}] {item['item_type']} for {item['recipient']} — {item['description']} ({status})"
 
 
-def show_pending(mailbox: list) -> None:
+def show_pending(mailbox: list[MailItem]) -> None:
     """Print all items waiting for pickup."""
-    waiting: list = pending_items(mailbox)
+    waiting: list[MailItem] = pending_items(mailbox)
     if len(waiting) == 0:
         print("\n  No items waiting for pickup.")
     else:
@@ -92,7 +96,7 @@ def show_pending(mailbox: list) -> None:
     print()
 
 
-def show_all(mailbox: list) -> None:
+def show_all(mailbox: list[MailItem]) -> None:
     """Print every item in the mailbox."""
     if len(mailbox) == 0:
         print("\n  Mailroom is empty.\n")
@@ -103,7 +107,7 @@ def show_all(mailbox: list) -> None:
         print()
 
 
-def show_stats(mailbox: list) -> None:
+def show_stats(mailbox: list[MailItem]) -> None:
     """Print summary statistics."""
     total: int = len(mailbox)
     waiting: int = len(pending_items(mailbox))
@@ -112,7 +116,7 @@ def show_stats(mailbox: list) -> None:
     print(f"  Waiting:       {waiting}")
     print(f"  Picked up:     {picked}")
     if total > 0:
-        counts: dict = count_by_type(mailbox)
+        counts: dict[str, int] = count_by_type(mailbox)
         print("  By type:")
         for item_type in sorted(counts):
             print(f"    {item_type}: {counts[item_type]}")
@@ -138,7 +142,7 @@ MENU: str = """
 
 def main() -> None:
     """Run the mailroom menu loop."""
-    mailbox: list = []
+    mailbox: list[MailItem] = []
     running: bool = True
 
     print("\nWelcome to Mailroom Live!")
@@ -157,7 +161,7 @@ def main() -> None:
             if recipient == "" or item_type == "" or description == "":
                 print("\n  All fields are required. Item not added.")
             else:
-                item: dict = add_item(mailbox, recipient, item_type, description)
+                item: MailItem = add_item(mailbox, recipient, item_type, description)
                 print(f"\n  Logged: {item['item_type']} for {item['recipient']} (ID: {item['id']})")
 
         elif choice == "2":
