@@ -1,4 +1,5 @@
 """Mailroom subscriber functions — real implementations."""
+import sys
 
 
 def read_subscribers(path: str) -> str:
@@ -28,3 +29,14 @@ def count_group(text: str, group: str) -> int:
         if columns[3] == group:
             count += 1
     return count
+
+
+# Front door: only runs for `uv run mailroom.py <name>`, not when imported
+if __name__ == "__main__":
+    name: str = sys.argv[1]  # e.g. "subscribers"
+    text: str = read_subscribers("data/" + name + ".csv")
+
+    print(count_emails(text), "emails")
+    groups: list[str] = ["daily-drinkers", "gift-buyers", "tea-curious"]
+    for group in groups:
+        print(group + ":", count_group(text, group))
