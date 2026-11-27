@@ -1,6 +1,6 @@
 # checks.py: tests for the tools in mailroom.py
 
-from mailroom import read_subscribers, count_emails, count_group
+from mailroom import read_subscribers, count_emails, count_group, count_consent
 
 subscribers: str = read_subscribers("data/subscribers.csv")
 
@@ -13,6 +13,9 @@ assert count_emails(subscribers) == 24, "there should be 24 emails"
 # Behavior 3: the daily-drinkers group has 8 rows
 assert count_group(subscribers, "daily-drinkers") == 8, "daily-drinkers should have 8 rows"
 
+# Behavior 5: 24 subscribers gave consent (consent column is not empty)
+assert count_consent(subscribers) == 24, "there should be 24 subscribers with consent"
+
 print("all checks passed")
 
 # Behavior 4 (written before the code, checked by hand for now):
@@ -22,3 +25,4 @@ print("all checks passed")
 #   daily-drinkers: 8
 #   gift-buyers: 8
 #   tea-curious: 8
+#   consent: 24

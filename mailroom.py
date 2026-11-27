@@ -29,6 +29,16 @@ def count_group(text: str, group: str) -> int:
     return count
 
 
+def count_consent(text: str) -> int:
+    """Promise: count the subscriber rows whose consent column is not empty (header not counted)."""
+    count: int = 0
+    for line in text.splitlines():
+        columns: list[str] = line.split(",")
+        if line and columns[5]:  # column 5 is "consent"; "" counts as "no"
+            count += 1
+    return count - 1  # the header's consent column says "consent", so it was counted once
+
+
 # Front door: only runs for `uv run mailroom.py <name>`, not when imported
 if __name__ == "__main__":
     name: str = sys.argv[1]  # e.g. "subscribers"
@@ -37,3 +47,4 @@ if __name__ == "__main__":
     groups: list[str] = ["daily-drinkers", "gift-buyers", "tea-curious"]
     for group in groups:
         print(group + ":", count_group(text, group))
+    print("consent:", count_consent(text))
