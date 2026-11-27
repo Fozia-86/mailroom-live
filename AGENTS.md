@@ -16,7 +16,7 @@ The agent writes code; the learner reads, predicts, checks and directs.
 
 ## 2. Where the learner is
 
-**Completed: up to and including lesson 13.8.** Update this line whenever the learner finishes a lesson.
+**Completed: up to and including lesson 13.9.** Update this line whenever the learner finishes a lesson.
 
 | Lesson | Title |
 | --- | --- |
@@ -28,8 +28,9 @@ The agent writes code; the learner reads, predicts, checks and directs.
 | 13.6 | Functions: the signature is the contract |
 | 13.7 | Lists and dictionaries |
 | 13.8 | Text from a file |
+| 13.9 | Dates |
 
-Coming next (NOT yet learned): 13.9 Dates · 13.10 Reading an error ·
+Coming next (NOT yet learned): 13.10 Reading an error ·
 13.11 Tests first: the TDG loop · 13.12 Judgment · 13.13 How today's tools realize it · Lab 13.
 
 ## 3. The concept boundary (most important rule)
@@ -67,11 +68,22 @@ STOP and **teach the concept first** (see §4), then use it. Never slip a new fe
   `[0]` is the file name, `[1]` the first word after it
 - `if __name__ == "__main__":` front door: runs only when the file is run directly, not imported
 
+### Learned in 13.9 (Dates)
+
+- `from datetime import date, timedelta`; a `date` is a calendar square, text is only a picture of it
+- `date.fromisoformat("2026-11-20")` text → date; `day.isoformat()` date → text
+- `day - timedelta(days=30)` / `day + timedelta(days=1)`: steps, the start day is not counted
+- Comparing dates with `<=` etc.; `date + "text"` raises `TypeError`
+- `day.weekday()`: Monday is `0` … Sunday is `6`; step with `while not day.weekday() == 0:`
+- `day.year`, `day.month` as `int`; `date(year, month, 1)` builds a date; month 13 rolls to 1, year + 1
+- Lesson rule: keep dates as ISO text (`YYYY-MM-DD`), do date math with a calendar-day type (`date`), and test the three
+  pages that turn: month end, year end, leap day (e.g. `2026-12-20` + 30 days = `2027-01-19`)
+
 ### Not yet learned (teach first before using)
 
 Anything not listed above, including: `len()`,
 `elif`, f-strings, other string methods (`.strip()`, …), slicing, `isinstance()`, tuples, sets, `try`/`except`,
-the `csv` module, dates, classes, `dataclass`, `pytest`, `input()`, `is None`, `range()`,
+the `csv` module, classes, `dataclass`, `pytest`, `input()`, `is None`, `range()`,
 `enumerate()`, list methods like `.append()`, `match`, async, external packages.
 
 When in doubt whether something was taught: **ask the learner**, don't assume.
@@ -109,7 +121,7 @@ Rules for the agent:
 - Every variable that needs it and every function has type labels (parameters and return type).
 - Every function gets at least one hand-checkable `assert` of its promise.
 - Money is stored as **whole cents in `int`** (e.g. $48.25 → `4825`). Convert to dollars only when printing.
-- Dates as year-first text (`"2027-03-05"`) until 13.9 teaches dates properly.
+- Dates are stored as year-first text (`"2027-03-05"`) and turned into `date` values with `date.fromisoformat()` when the logic needs them.
 - Keep it simple: plain functions, lists and dicts. No classes or libraries until taught.
 - The learner writes predictions in `notes/predictions.md` before any code, and keeps a concept recap in `notes/concepts.md`.
 
