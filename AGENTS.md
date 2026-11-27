@@ -1,84 +1,128 @@
-# AGENTS.md — Mailroom Live
+# AGENTS.md — mailroom-live
 
-> Everything an AI coding agent (or a returning human) needs to know about this project.
+Everything an AI agent needs to know before touching this repo. Read it fully, every session.
 
-## What Is This Project?
+## 1. What this project is
 
-**Mailroom Live** is a command-line mailroom management system built in Python.
-It tracks packages, letters, and deliveries for a building or office — who they are for,
-when they arrived, whether they have been picked up, and basic statistics.
-
-We are building it **incrementally** as a vehicle for learning programming fundamentals,
-following the PRIMMAI curriculum at:
+`mailroom-live` is a **learning project**. The learner is working through
+*Programming Fundamentals in the AI Era* (The AI Agent Factory, Part III, Chapter 13):
 <https://agentfactory.panaversity.org/building-ai-workers/programming-fundamentals/>
 
-## Curriculum Progress
+The goal is not to ship features fast. The goal is that **the learner understands every line**.
+The agent writes code; the learner reads, predicts, checks and directs.
 
-We have covered **through Lesson 13.7**. The concepts available to us so far:
+- Language: **Python only** (the chapter also teaches TypeScript; this repo does not use it).
+- Domain: a "mailroom": features are decided together with the learner, one small step at a time.
 
-| Lesson | Title | Key Concepts |
-|--------|-------|-------------- |
-| 13.1 | You read, the agent writes | Reading agent-written code; predict-before-you-run; five steps for reading code |
-| 13.2 | The workbench | Tests, type checker, linter; strict mode; understanding commands the agent runs |
-| 13.3 | Values, types and variables | Variables in Python; value types (str, int, float, bool); text ≠ number; money in whole cents |
-| 13.4 | Decisions and repetition | `if`/`elif`/`else`; `for` loops; stating logic as a sentence |
-| 13.5 | Two conditions, empty values, while loops | `and`/`or`; `None` and empty values; `while` loop termination |
-| 13.6 | Functions: the signature is the contract | Function signatures; return types; testing with one hand-checkable assertion |
-| 13.7 | Lists and dictionaries | Lists, dicts, records (typed dicts); missing-key handling; sorting |
+## 2. Where the learner is
 
-### What We May NOT Use Yet
+**Completed: up to and including lesson 13.8.** Update this line whenever the learner finishes a lesson.
 
-- File I/O (Lesson 13.8)
-- Date/time handling (Lesson 13.9)
-- Error handling / try-except (Lesson 13.10)
-- Test-driven development loop (Lesson 13.11)
-- Advanced judgment / design patterns (Lesson 13.12+)
+| Lesson | Title |
+| --- | --- |
+| 13.1 | You read, the agent writes |
+| 13.2 | The workbench |
+| 13.3 | Values, types and variables |
+| 13.4 | Decisions and repetition |
+| 13.5 | Two conditions, empty values and while loops |
+| 13.6 | Functions: the signature is the contract |
+| 13.7 | Lists and dictionaries |
+| 13.8 | Text from a file |
 
-If a feature needs a concept from a later lesson, **teach the concept first** before writing the code.
+Coming next (NOT yet learned): 13.9 Dates · 13.10 Reading an error ·
+13.11 Tests first: the TDG loop · 13.12 Judgment · 13.13 How today's tools realize it · Lab 13.
 
-## Project Structure
+## 3. The concept boundary (most important rule)
 
-```
-mailroom-live/
-  main.py          # Entry point
-  pyproject.toml   # Project config (uv / PEP 621)
-  README.md        # User-facing readme
-  AGENTS.md        # This file — project knowledge for agents
-  .python-version  # Pinned Python version (3.14)
-```
+**Only use Python features the learner has already learned.** If a task needs anything new,
+STOP and **teach the concept first** (see §4), then use it. Never slip a new feature in silently.
 
-## Tech Stack
+### Allowed (learned in 13.1–13.7)
 
-- **Language:** Python 3.14
-- **Package manager:** uv
-- **No external dependencies yet** — standard library only
+- Values and variables: `name = value`, reassignment, `#` comments, `print(a, b)`
+- Types: `str`, `int`, `float` (never for money), `bool` (`True`/`False`), `None`
+- Type labels on variables and functions: `x: int = 5`, `def f(a: int) -> int:`
+- Conversion: `int(text)` (and that `int("4,825.00")` raises `ValueError`)
+- `+` on text joins, on numbers adds, mixed raises `TypeError`
+- `if` / `else`, comparisons `== > >= < <=`, logical `and` `or` `not`
+- Truthiness traps: `""`, `None` and `0` all count as "no"; default idiom `x = x or "default"`
+- Loops: `for x in items:`, `while condition:` (with a line that changes the condition), `x += 1`
+- Filter pattern (`if` inside a loop) and list comprehension `[x for x in items if ...]`
+- Functions: parameters, arguments, body, `return`, signature as contract, pure/deterministic functions
+- `assert condition, "message"` as a hand-checkable test of a function's promise
+- Lists: literals, 0-based indexing, `IndexError` when out of range
+- Dictionaries: `dict[str, str]` etc., `d["key"]`, `KeyError`, `.get(key)`, `.get(key, default)`,
+  case-sensitive keys, records (a dict with named fields, accessed as `inv["status"]`)
+- Sorting: `sorted(items)`, `key=`, `key=lambda r: r["cents"]`, `reverse=True`
+- Workbench: `uv run python file.py`, `uv run pyright` (strict mode)
 
-## Conventions
+### Learned in 13.8 (Text from a file)
 
-1. **Every number comes from a tested function** (Lesson 13.6 rule).
-2. **Predict before you run** — when showing new code, ask: "What do you think this prints?"
-3. **Money is stored in whole cents** (integers), not floats (Lesson 13.3 rule).
-4. **Use type hints** on every function signature — the signature is the contract.
-5. **Keep functions small** — each does one thing and can be described in one sentence.
-6. **Use `if __name__ == "__main__":`** to guard the entry point.
+- Reading a file: `with open(path, encoding="utf-8") as f:` then `text = f.read()` gives one `str`
+- Newline `\n`: the invisible "Enter" between lines; `print` obeys it rather than showing it
+- `text.splitlines()` → `list[str]`, one item per line, `\n` removed
+- `row.split(",")` → `list[str]` of columns, the commas removed
+- `from mailroom import name` to use another file's function; without it → `NameError`
+- `import sys` (plain form, use with a dot) and `sys.argv`: the typed command words as a list,
+  `[0]` is the file name, `[1]` the first word after it
+- `if __name__ == "__main__":` front door: runs only when the file is run directly, not imported
 
-## Commands
+### Not yet learned (teach first before using)
+
+Anything not listed above, including: `len()`,
+`elif`, f-strings, other string methods (`.strip()`, …), slicing, `isinstance()`, tuples, sets, `try`/`except`,
+the `csv` module, dates, classes, `dataclass`, `pytest`, `input()`, `is None`, `range()`,
+`enumerate()`, list methods like `.append()`, `match`, async, external packages.
+
+When in doubt whether something was taught: **ask the learner**, don't assume.
+
+## 4. How we learn: PRIMM-AI+
+
+Every new piece of code moves through five steps. The learner drives; the agent assists.
+
+| Step | Learner does | Agent does |
+| --- | --- | --- |
+| **P**redict | Writes down what the code will do *before* it runs | Stays quiet. The guess is theirs |
+| **R**un | Approves the run, sees the real output | Runs it (with permission) |
+| **I**nvestigate | Compares guess vs. output, asks *why* | Explains a line only when asked |
+| **M**odify | Changes one thing, predicts again, runs again | Makes the edit described |
+| **M**ake | Specifies their own version | Builds against that spec; learner verifies |
+
+**AI+** means: the agent is always available as a reading partner, and **nothing is accepted on
+faith**: a run or a test decides, not the agent's word.
+
+Rules for the agent:
+
+1. **Predict before run, every time.** Show the code, ask for a prediction, wait. Never show
+   output first. "A guess made after the output is not a guess."
+2. **Teaching a new concept** (outside §3's allowed list): give one plain analogy, a tiny
+   example, then run a PRIMM cycle on it *before* using it in project code. Then add it to the
+   allowed list in §3.
+3. One small step per turn. Don't dump large files on the learner.
+4. Don't explain unless asked during Predict/Run. Explain line by line during Investigate.
+5. Never accept totals, dates or amounts a model "worked out" in chat: write a function plus an
+   `assert`, and run it.
+
+## 5. Project conventions
+
+- Tooling: **uv**, Python **3.14** (see `.python-version`), **pyright in strict mode** (`pyproject.toml`).
+- Every variable that needs it and every function has type labels (parameters and return type).
+- Every function gets at least one hand-checkable `assert` of its promise.
+- Money is stored as **whole cents in `int`** (e.g. $48.25 → `4825`). Convert to dollars only when printing.
+- Dates as year-first text (`"2027-03-05"`) until 13.9 teaches dates properly.
+- Keep it simple: plain functions, lists and dicts. No classes or libraries until taught.
+- The learner writes predictions in `notes/predictions.md` before any code, and keeps a concept recap in `notes/concepts.md`.
+
+Commands:
 
 ```bash
-# Run the project
-uv run main.py
-
-# Add a dependency (when needed later)
-uv add <package-name>
-
-# Run tests (when we add them)
-uv run pytest
+uv run python main.py   # run
+uv run pyright          # type check: must show 0 errors before any commit
 ```
 
-## Learning Approach
+## 6. Git workflow
 
-- We follow the PRIMMAI curriculum lesson by lesson.
-- When a new concept is needed, the agent teaches it with a small example first,
-  then applies it to the mailroom project.
-- Code is written to be **readable** — clarity over cleverness.
-- Every new feature gets at least one assertion or test to verify it works.
+- Remote: the learner's own GitHub repo (check with `git remote -v`), branch `main`.
+- Before committing: run the file and `uv run pyright`; both must pass.
+- Small commits with clear messages. Show `git status` / `git diff` to the learner before committing.
+- Ask before pushing.

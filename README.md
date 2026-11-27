@@ -1,16 +1,11 @@
-# Mailroom Live
+# mailroom-live
 
-A command-line mailroom management system built in Python — tracking packages, letters, and deliveries.
-
-Built incrementally while learning programming fundamentals with the [PRIMMAI curriculum](https://agentfactory.panaversity.org/building-ai-workers/programming-fundamentals/).
-
-## Quick Start
+A learning project for **Programming Fundamentals in the AI Era** (The AI Agent Factory, Chapter 13),
+built step by step with the PRIMM-AI+ method.
 
 ```bash
-uv run main.py
+uv run python main.py   # run
+uv run pyright          # type check (strict)
 ```
 
-## Requirements
-
-- Python 3.14+
-- [uv](https://docs.astral.sh/uv/) package manager
+See [AGENTS.md](AGENTS.md) for the full rules an AI agent follows in this repo.
