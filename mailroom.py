@@ -86,10 +86,11 @@ if __name__ == "__main__":
     # The ONLY place today's date is read, and only when --run-date was left out
     run_date = run_date or date.today().isoformat()
 
+    # Each command is checked by name, so an unknown command runs nothing
     if command == "next-send":
         print("next send:", next_send(run_date))
-    else:
-        text: str = read_subscribers("data/" + command + ".csv")
+    if command == "subscribers":
+        text: str = read_subscribers("data/subscribers.csv")
         print(count_emails(text), "emails")
         groups: list[str] = ["daily-drinkers", "gift-buyers", "tea-curious"]
         for group in groups:

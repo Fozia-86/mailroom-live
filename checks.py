@@ -24,6 +24,14 @@ assert count_joined_since(subscribers, "2026-11-20", 30) == 7, "7 should have jo
 edge: str = "first_name,last_name,email,group,joined_on,consent\nSam,Lee,sam@example.com,tea-curious,2026-10-21,waitlist form\n"
 assert count_joined_since(edge, "2026-11-20", 30) == 1, "a join on 2026-10-21 should count"
 
+# Behavior 9: one day too early does not count. 2026-10-20 is 31 days before 2026-11-20
+too_early: str = "first_name,last_name,email,group,joined_on,consent\nAli,Raza,ali@example.com,gift-buyers,2026-10-20,waitlist form\n"
+assert count_joined_since(too_early, "2026-11-20", 30) == 0, "a join on 2026-10-20 should not count"
+
+# Behavior 10: a join after the run date does not count (it belongs to a future run)
+too_late: str = "first_name,last_name,email,group,joined_on,consent\nMia,Chen,mia@example.com,daily-drinkers,2026-11-25,waitlist form\n"
+assert count_joined_since(too_late, "2026-11-20", 30) == 0, "a join on 2026-11-25 should not count"
+
 # Behavior 8: the next send is the first Monday of the next month
 assert next_send("2026-11-20") == "2026-12-07", "after 2026-11-20 the next send is 2026-12-07"
 assert next_send("2026-12-07") == "2027-01-04", "after 2026-12-07 the next send is 2027-01-04 (year end)"
