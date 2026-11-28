@@ -122,6 +122,9 @@ Rules for the agent:
 - Every function gets at least one hand-checkable `assert` of its promise.
 - Money is stored as **whole cents in `int`** (e.g. $48.25 → `4825`). Convert to dollars only when printing.
 - Dates are stored as year-first text (`"2027-03-05"`) and turned into `date` values with `date.fromisoformat()` when the logic needs them.
+- **Never read today's date inside the logic. Pass the run date in.** Functions take the run date
+  as a parameter. Only the command line (the front door) may read today's date, and only when
+  `--run-date` is left out.
 - Keep it simple: plain functions, lists and dicts. No classes or libraries until taught.
 - The learner writes predictions in `notes/predictions.md` before any code, and keeps a concept recap in `notes/concepts.md`.
 
