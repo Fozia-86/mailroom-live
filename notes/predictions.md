@@ -27,3 +27,17 @@ Write every guess here BEFORE running any code. A guess made after the output is
 1. **Will Mailroom crash?** Yes, it will crash with an unhandled error because `2026-02-30` is not a valid calendar date.
 2. **What will the last line of the error say?** `ValueError: day is out of range for month` (or `ValueError: Invalid isoformat string: '2026-02-30'`).
 3. **Which of your functions will it name?** It will name the function in `mailroom.py` that reads and parses the subscriber dates (such as `count_recent_subscribers` or `parse_date`).
+
+### Step 3: what actually happened (my readings)
+
+**Error 1: bad date 2026-02-30 in data/subscribers.csv (Jonas Berg)**
+- My reading: "day 30 ko aik range me hona chiey mean date ka format theek ho, joined countt ka function call huwa hai previous line se error aya hai, value ko theek se nhi dia gia or format theek nhi hai"
+- Actual: `ValueError: day 30 must be in range 1..28 for month 2 in year 2026`, mailroom.py line 51 in count_joined_since (called from line 118).
+- One sentence: mailroom.py line 51 in count_joined_since crashed with ValueError because data/subscribers.csv line 25 had 2026-02-30, a day that doesn't exist.
+- Fix: the data, not the code (git restore data/subscribers.csv). Line 51 was given the wrong value; it didn't make it.
+
+**Modify: renamed the column joined_on -> joined (in a temporary copy outside the project)**
+- My reading: "iso format invalid, type value missing, count joined function call line 51 error"
+- Actual: `ValueError: Invalid isoformat string: 'joined'`, line 51 in count_joined_since (called from line 118).
+- One sentence: line 51 crashed because the header was renamed to `joined`, so line 50 (which skips the header only when it says "joined_on") didn't skip it, and the word 'joined' was read as a date.
+- Lesson: read the traceback bottom-up; ask "did this line make the bad value, or was it given it?"
