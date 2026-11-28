@@ -1,7 +1,7 @@
 # checks.py: tests for the tools in mailroom.py
 
 from mailroom import read_subscribers, count_emails, count_group, count_consent
-from mailroom import count_joined_since, next_send
+from mailroom import count_joined_since, next_send, count_joined_between
 
 subscribers: str = read_subscribers("data/subscribers.csv")
 
@@ -32,6 +32,13 @@ assert count_joined_since(too_early, "2026-11-20", 30) == 0, "a join on 2026-10-
 too_late: str = "first_name,last_name,email,group,joined_on,consent\nMia,Chen,mia@example.com,daily-drinkers,2026-11-25,waitlist form\n"
 assert count_joined_since(too_late, "2026-11-20", 30) == 0, "a join on 2026-11-25 should not count"
 
+# Behavior 11: --since 2026-10-01 with run date 2026-11-20 counts 12 subscribers
+assert count_joined_between(subscribers, "2026-10-01", "2026-11-20") == 12, "12 should have joined from 2026-10-01 to 2026-11-20"
+
+# Behavior 12: the since day itself counts (inclusive)
+since_edge: str = "first_name,last_name,email,group,joined_on,consent\nZara,Ahmed,zara@example.com,tea-curious,2026-10-01,waitlist form\n"
+assert count_joined_between(since_edge, "2026-10-01", "2026-11-20") == 1, "a join on 2026-10-01 should count"
+
 # Behavior 8: the next send is the first Monday of the next month
 assert next_send("2026-11-20") == "2026-12-07", "after 2026-11-20 the next send is 2026-12-07"
 assert next_send("2026-12-07") == "2027-01-04", "after 2026-12-07 the next send is 2027-01-04 (year end)"
@@ -51,6 +58,11 @@ print("all checks passed")
 # the same 5 lines, then ends with:
 #
 #   7 joined in the last 30 days
+#
+# `uv run mailroom.py subscribers --since 2026-10-01 --run-date 2026-11-20` prints
+# the same 5 lines, then ends with:
+#
+#   12 joined since 2026-10-01
 #
 # `uv run mailroom.py next-send --run-date 2026-11-20` prints exactly:
 #
